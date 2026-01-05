@@ -1,0 +1,1744 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Urlaubsplaner</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --stroke:#e5e7eb;
+      --stroke2:#d1d5db;
+
+      --text:#0f172a;
+      --muted:#475569;
+
+      --shadow: 0 10px 25px rgba(15,23,42,.08);
+      --shadow2: 0 6px 18px rgba(15,23,42,.06);
+
+      --weekendBg:#f3f4f6;
+
+      --holidayBg:#fee2e2;
+      --holidaySt:#fecaca;
+
+      --bridgeBg:#dbeafe;
+      --bridgeSt:#bfdbfe;
+
+      --vacBg:#dcfce7;
+      --vacSt:#bbf7d0;
+
+      --previewBg: rgba(34,197,94,.14);
+      --previewSt: rgba(34,197,94,.25);
+
+      --schoolBg:#fef9c3;
+      --schoolSt:#fde68a;
+
+      --focus: rgba(2,132,199,.10);
+      --focusSt: rgba(2,132,199,.20);
+
+      --toastBg:#0f172a;
+      --toastText:#f8fafc;
+      --toastBorder: rgba(255,255,255,.10);
+
+      --neg:#dc2626;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+
+    .container {
+        max-width: 1520px;
+        margin: 18px auto 34px;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: 530px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+        width: 100%;
+    }
+    @media (max-width: 1100px){
+      .container{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-width:0;
+    }
+
+    .cardHeader{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      min-width:0;
+    }
+    .title .t{
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .title .s{
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height:1.25;
+      min-width:0;
+    }
+
+    .cardBody{
+      padding: 12px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      min-width:0;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      min-width:0;
+    }
+
+    label{
+      display:flex;
+      flex-direction:column;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12.5px;
+      min-width:0;
+    }
+
+    select, input[type="number"], input[type="text"]{
+      appearance:none;
+      outline:none;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      transition: border-color .12s ease, box-shadow .12s ease;
+      min-width:0;
+      width:100%;
+    }
+    select:focus, input[type="number"]:focus, input[type="text"]:focus{
+      border-color: var(--focusSt);
+      box-shadow: 0 0 0 4px var(--focus);
+    }
+
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 150px;
+      gap: 10px;
+      min-width:0;
+    }
+
+    .dashboard{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      min-width:0;
+    }
+    @media (max-width: 1100px){
+      .dashboard{ grid-template-columns: 1fr; }
+    }
+
+    .tile{
+      padding: 12px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      box-shadow: var(--shadow2);
+      min-height: 78px;
+      min-width:0;
+      overflow:hidden;
+    }
+    .tile .k{
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tile .v{
+      font-weight: 950;
+      font-size: 20px;
+      margin-top: 6px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tile .s{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tile .v.neg{
+      color: var(--neg);
+    }
+
+    .togglesRow{
+      display:flex;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      background: #f8fafc;
+      flex-wrap:nowrap;
+      min-width:0;
+    }
+    @media (max-width: 520px){
+      .togglesRow{ flex-wrap:wrap; }
+    }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      cursor:pointer;
+      user-select:none;
+      flex: 1 1 0;
+      min-width: 0;
+      overflow:hidden;
+    }
+    .toggle input{
+      width: 18px;
+      height: 18px;
+      accent-color: #16a34a;
+      cursor:pointer;
+      flex: 0 0 auto;
+    }
+    .toggle .m{
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text);
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .hint{
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px dashed var(--stroke2);
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.35;
+      min-width:0;
+    }
+
+    .listCard{
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      background:#ffffff;
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      min-width:0;
+    }
+    .listTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      background:#f8fafc;
+      min-width:0;
+    }
+    .listTop .h{
+      font-size: 13px;
+      font-weight: 950;
+      color: var(--text);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .copyBtn{
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 950;
+      cursor:pointer;
+      transition: background .12s ease, border-color .12s ease, transform .06s ease, opacity .12s ease;
+      box-shadow: var(--shadow2);
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .copyBtn:hover{
+      border-color: var(--stroke2);
+      background: #f8fafc;
+    }
+    .copyBtn:active{ transform: translateY(1px); }
+    .copyBtn:disabled{ opacity:.55; cursor:not-allowed; }
+    .copyBtn svg{
+      width: 16px;
+      height: 16px;
+      stroke: #0f172a;
+      stroke-width: 2.2;
+      fill:none;
+    }
+
+    .tableWrap{
+      max-height: 220px;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      font-size: 12.5px;
+      table-layout: fixed;
+    }
+    thead th{
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      z-index: 2;
+      color: var(--muted);
+      text-align:left;
+      font-weight: 900;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      white-space:nowrap;
+    }
+    tbody td{
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 0;
+    }
+    tbody tr:last-child td{ border-bottom:none; }
+    .empty{
+      padding: 12px;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .rowTrashCell{
+      width: 56px;
+      max-width: 56px;
+      min-width: 56px;
+      padding-right: 10px;
+      overflow: visible;
+      text-overflow:clip;
+      white-space:nowrap;
+    }
+    #rangesTable th:last-child{
+      width: 56px;
+    }
+    .rowTrashBtn{
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      box-shadow: var(--shadow2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition: background .12s ease, border-color .12s ease, transform .06s ease, opacity .12s ease;
+      padding:0;
+    }
+    .rowTrashBtn:hover{
+      border-color: var(--stroke2);
+      background: #f8fafc;
+    }
+    .rowTrashBtn:active{ transform: translateY(1px); }
+    .rowTrashBtn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .rowTrashBtn svg{
+      width: 16px;
+      height: 16px;
+      stroke: #0f172a;
+      stroke-width: 2.2;
+      fill:none;
+    }
+
+    .tip{
+      position:relative;
+    }
+    .tip[data-tip]::after{
+      content: attr(data-tip);
+      position:absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 18px 45px rgba(15,23,42,.35);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: normal;
+      max-width: 260px;
+      text-align: center;
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .12s ease, transform .12s ease;
+      z-index: 99999;
+    }
+    .tip[data-tip]::before{
+      content:"";
+      position:absolute;
+      left: 50%;
+      bottom: calc(100% + 4px);
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: #0f172a;
+      border-left: 1px solid rgba(255,255,255,.10);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      transform: translateX(-50%) rotate(45deg);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .12s ease;
+      z-index: 99999;
+    }
+    .tip:hover::after,
+    .tip:focus-visible::after{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+    .tip:hover::before,
+    .tip:focus-visible::before{
+      opacity: 1;
+    }
+
+    .calendarCard{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-width:0;
+      width:100%;
+    }
+
+    .calTop{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--stroke);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+      min-width:0;
+    }
+    .calTop .left{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      min-width: 220px;
+      max-width: 100%;
+    }
+    .calTop .year{
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .calTop .meta{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.25;
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .calRight{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      justify-content:flex-end;
+      margin-left:auto;
+      min-width:0;
+    }
+
+    .iconBtns{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+    }
+    .iconBtn{
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      box-shadow: var(--shadow2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition: background .12s ease, border-color .12s ease, transform .06s ease, opacity .12s ease;
+      padding:0;
+    }
+    .iconBtn:hover{
+      border-color: var(--stroke2);
+      background: #f8fafc;
+    }
+    .iconBtn:active{ transform: translateY(1px); }
+    .iconBtn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .iconBtn svg{
+      width: 18px;
+      height: 18px;
+      stroke: #0f172a;
+      stroke-width: 2.2;
+      fill: none;
+    }
+
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      justify-content:flex-end;
+      width:100%;
+      margin-top: 8px;
+      min-width:0;
+    }
+    .legend .lg{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .sw{
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: #ffffff;
+    }
+    .sw.w{ background: var(--weekendBg); }
+    .sw.h{ background: var(--holidayBg); border-color: var(--holidaySt); }
+    .sw.b{ background: var(--bridgeBg); border-color: var(--bridgeSt); }
+    .sw.v{ background: var(--vacBg); border-color: var(--vacSt); }
+    .sw.p{ background: var(--previewBg); border-color: var(--previewSt); }
+    .sw.f{ background: var(--schoolBg); border-color: var(--schoolSt); }
+
+    .months{
+      padding: 12px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(240px, 1fr));
+      gap: 12px;
+      width:100%;
+      min-width:0;
+    }
+    @media (max-width: 1280px){
+      .months{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+    }
+    @media (max-width: 860px){
+      .months{ grid-template-columns: 1fr; }
+    }
+
+    .month{
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      border-radius: 10px;
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+      min-width:0;
+    }
+
+    .monthTop{
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--stroke);
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap: 10px;
+      background: #f8fafc;
+      min-width:0;
+    }
+    .monthTop .name{
+      font-weight: 950;
+      font-size: 14px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .monthTop .hintSmall{
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+
+    .dow{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      padding: 10px 10px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing:.2px;
+      user-select:none;
+      min-width:0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      padding: 0 10px 10px;
+      min-width:0;
+    }
+
+    .cell{
+      height: 40px;
+      border-radius: 4px;
+      border: 1px solid var(--stroke);
+      background: #ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      cursor:pointer;
+      user-select:none;
+      transition: background .10s ease, border-color .10s ease, transform .06s ease;
+      overflow:hidden;
+      min-width: 0;
+    }
+    .cell:hover{
+      border-color: var(--stroke2);
+      background: #f8fafc;
+    }
+    .cell:active{ transform: translateY(1px); }
+
+    .cell.muted{
+      cursor:default;
+      opacity:.35;
+      background: #f8fafc;
+    }
+    .cell.muted:hover{ background:#f8fafc; border-color: var(--stroke); transform:none; }
+
+    .cell .d{
+      font-size: 13px;
+      font-weight: 950;
+      z-index:2;
+    }
+
+    .cell.weekend{ background: var(--weekendBg); }
+    .cell.holiday{ background: var(--holidayBg); border-color: var(--holidaySt); }
+    .cell.bridge{ background: var(--bridgeBg); border-color: var(--bridgeSt); }
+    .cell.school{ background: var(--schoolBg); border-color: var(--schoolSt); }
+    .cell.vac{ background: var(--vacBg); border-color: var(--vacSt); }
+    .cell.preview{ background: var(--previewBg); border-color: var(--previewSt); }
+
+    .cell.school.vac{ background: var(--vacBg); border-color: var(--vacSt); }
+    .cell.school.preview{
+      background: linear-gradient(0deg, rgba(34,197,94,.14), rgba(34,197,94,.14)), var(--schoolBg);
+      border-color: var(--previewSt);
+    }
+
+    .toasts{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      z-index: 9999;
+      pointer-events:none;
+      max-width: min(360px, calc(100vw - 28px));
+    }
+    .toast{
+      pointer-events:none;
+      background: var(--toastBg);
+      color: var(--toastText);
+      border: 1px solid var(--toastBorder);
+      border-radius: 12px;
+      box-shadow: 0 18px 45px rgba(15,23,42,.35);
+      padding: 10px 12px;
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: toastIn .18s ease-out forwards;
+      overflow:hidden;
+    }
+    .toast .icon{
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+      border-radius: 6px;
+      background: rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .toast .icon svg{
+      width: 12px;
+      height: 12px;
+      stroke: var(--toastText);
+      stroke-width: 2.2;
+      fill:none;
+    }
+    .toast .msg{
+      font-size: 12.5px;
+      line-height: 1.25;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      min-width:0;
+    }
+    .toast.out{
+      animation: toastOut .16s ease-in forwards;
+    }
+    @keyframes toastIn{
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes toastOut{
+      to { opacity: 0; transform: translateY(8px); }
+    }
+
+    #rangesTable th:nth-child(1){
+      width: 38px;
+      padding-left: 10px;
+      padding-right: 8px;
+    }
+    #rangesTable td:nth-child(1){
+      width: 38px;
+      padding-left: 10px;
+      padding-right: 8px;
+      text-align: right;
+    }
+
+    #rangesTable th:nth-child(4),
+    #rangesTable td:nth-child(4){
+      width: 64px;
+      text-align: right;
+    }
+
+    #rangesTable th:nth-child(2),
+    #rangesTable th:nth-child(3){
+      width: 140px;
+    }
+
+    #rangesTable td:nth-child(2),
+    #rangesTable td:nth-child(3){
+      overflow: visible;
+      text-overflow: clip;
+      max-width: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="card">
+      <div class="cardHeader">
+        <div class="title">
+          <div class="t">Urlaubsplaner</div>
+          <div class="s">Klick 1 = Start · Klick 2 = Ende · Zeitraum wird gesetzt</div>
+        </div>
+      </div>
+
+      <div class="cardBody">
+        <div class="grid2">
+          <label>
+            Bundesland / Jahr
+            <div class="row2">
+              <select id="stateSelect">
+                <option value="BW">Baden-Württemberg</option>
+                <option value="BY">Bayern</option>
+                <option value="BE">Berlin</option>
+                <option value="BB">Brandenburg</option>
+                <option value="HB">Bremen</option>
+                <option value="HH">Hamburg</option>
+                <option value="HE">Hessen</option>
+                <option value="MV">Mecklenburg-Vorpommern</option>
+                <option value="NI">Niedersachsen</option>
+                <option value="NW">Nordrhein-Westfalen</option>
+                <option value="RP">Rheinland-Pfalz</option>
+                <option value="SL">Saarland</option>
+                <option value="SN">Sachsen</option>
+                <option value="ST">Sachsen-Anhalt</option>
+                <option value="SH">Schleswig-Holstein</option>
+                <option value="TH">Thüringen</option>
+              </select>
+              <select id="yearSelect"></select>
+            </div>
+          </label>
+
+          <label>
+            Verfügbare Urlaubstage
+            <input id="availableDays" type="number" min="0" max="100" step="1" value="30" />
+          </label>
+        </div>
+
+        <div class="dashboard">
+          <div class="tile">
+            <div class="k">Gesetzte Urlaubstage</div>
+            <div class="v" id="dashUsed">0</div>
+            <div class="s">Werktage (ohne WE/Feiertage)</div>
+          </div>
+          <div class="tile">
+            <div class="k">Resturlaub</div>
+            <div class="v" id="dashLeft">30</div>
+            <div class="s">Verfügbar − gesetzt</div>
+          </div>
+          <div class="tile">
+            <div class="k">Freie Tage</div>
+            <div class="v" id="dashFree">0</div>
+            <div class="s">im Block inkl. WE/Feiertage</div>
+          </div>
+        </div>
+
+        <div class="togglesRow">
+          <label class="toggle">
+            <input id="toggleHolidays" type="checkbox" checked />
+            <span class="m">Feiertage</span>
+          </label>
+
+          <label class="toggle">
+            <input id="toggleBridge" type="checkbox" checked />
+            <span class="m">Brückentage</span>
+          </label>
+
+          <label class="toggle">
+            <input id="toggleSchool" type="checkbox" checked />
+            <span class="m">Schulferien</span>
+          </label>
+        </div>
+
+        <div class="listCard">
+          <div class="listTop">
+            <div class="h" id="rangeTitle">Zeiträume (0)</div>
+            <button class="copyBtn" id="copyRangesBtn" disabled>
+              <svg viewBox="0 0 24 24">
+                <path d="M9 9h10v10H9z"></path>
+                <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+              </svg>
+              Kopieren
+            </button>
+          </div>
+          <div class="tableWrap" id="rangesWrap">
+            <div class="empty" id="rangesEmpty">Keine Zeiträume gesetzt.</div>
+            <table id="rangesTable" style="display:none;">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Start</th>
+                  <th>Ende</th>
+                  <th>Tage</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="rangesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <label>
+          Sharing-Link
+          <input id="shareLink" type="text" readonly />
+        </label>
+
+        <div class="hint">
+          Vorschau beim Auswählen. ESC bricht ab. Undo/Redo/Löschen oben rechts im Kalender.
+        </div>
+      </div>
+    </aside>
+
+    <main class="calendarCard">
+      <div class="calTop">
+        <div class="left">
+          <div class="year" id="yearTitle">—</div>
+          <div class="meta" id="calMeta">—</div>
+        </div>
+
+        <div class="calRight">
+          <div class="iconBtns">
+            <button class="iconBtn" id="undoBtn" disabled aria-label="Undo">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 14l-4-4 4-4"></path>
+                <path d="M5 10h9a5 5 0 1 1 0 10h-2"></path>
+              </svg>
+            </button>
+            <button class="iconBtn" id="redoBtn" disabled aria-label="Redo">
+              <svg viewBox="0 0 24 24">
+                <path d="M15 6l4 4-4 4"></path>
+                <path d="M19 10H10a5 5 0 1 0 0 10h2"></path>
+              </svg>
+            </button>
+            <button class="iconBtn tip" id="trashBtn" disabled aria-label="Alles löschen">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4h8v2"></path>
+                <path d="M6 6l1 16h10l1-16"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="lg"><span class="sw w"></span><span>Wochenende</span></div>
+          <div class="lg"><span class="sw h"></span><span>Feiertag</span></div>
+          <div class="lg"><span class="sw b"></span><span>Brückentag</span></div>
+          <div class="lg"><span class="sw v"></span><span>Gesetzt</span></div>
+          <div class="lg"><span class="sw p"></span><span>Vorschau</span></div>
+          <div class="lg"><span class="sw f"></span><span>Schulferien</span></div>
+        </div>
+      </div>
+      <div class="months" id="months"></div>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script>
+    const STATES = ["BW","BY","BE","BB","HB","HH","HE","MV","NI","NW","RP","SL","SN","ST","SH","TH"];
+    const MONTHS_DE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+    const DOW_DE = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+
+    const pad2 = (n) => String(n).padStart(2,"0");
+    const toISO = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    const fromISO = (s) => {
+      const [y,m,d] = s.split("-").map(Number);
+      return new Date(y, m-1, d);
+    };
+      const toDE = (iso) => {
+      const [y,m,d] = iso.split("-");
+      return `${d}.${m}.${y}`;
+    };
+
+    const fromDE = (s) => {
+      const [d,m,y] = s.split(".").map(Number);
+      return new Date(y, m-1, d);
+    };
+    const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+    const dayOfWeekMon0 = (d) => (d.getDay() + 6) % 7;
+    const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+
+    const stateSelect = document.getElementById("stateSelect");
+    const yearSelect = document.getElementById("yearSelect");
+    const availableDaysInput = document.getElementById("availableDays");
+    const toggleHolidays = document.getElementById("toggleHolidays");
+    const toggleBridge = document.getElementById("toggleBridge");
+    const toggleSchool = document.getElementById("toggleSchool");
+
+    const monthsEl = document.getElementById("months");
+    const calMetaEl = document.getElementById("calMeta");
+    const yearTitleEl = document.getElementById("yearTitle");
+
+    const dashUsedEl = document.getElementById("dashUsed");
+    const dashLeftEl = document.getElementById("dashLeft");
+    const dashFreeEl = document.getElementById("dashFree");
+
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const trashBtn = document.getElementById("trashBtn");
+
+    const shareLinkEl = document.getElementById("shareLink");
+
+    const rangesTitleEl = document.getElementById("rangeTitle");
+    const rangesEmptyEl = document.getElementById("rangesEmpty");
+    const rangesTableEl = document.getElementById("rangesTable");
+    const rangesBodyEl = document.getElementById("rangesBody");
+    const copyRangesBtn = document.getElementById("copyRangesBtn");
+
+    const toastsEl = document.getElementById("toasts");
+
+    const STORAGE_KEY = "urlaub_multiyear_clickrange_v1";
+
+    const toastIcon = (kind) => {
+      if (kind === "copy") return `<svg viewBox="0 0 24 24"><path d="M9 9h10v10H9z"></path><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>`;
+      if (kind === "undo") return `<svg viewBox="0 0 24 24"><path d="M9 14l-4-4 4-4"></path><path d="M5 10h9a5 5 0 1 1 0 10h-2"></path></svg>`;
+      if (kind === "redo") return `<svg viewBox="0 0 24 24"><path d="M15 6l4 4-4 4"></path><path d="M19 10H10a5 5 0 1 0 0 10h2"></path></svg>`;
+      if (kind === "trash") return `<svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 16h10l1-16"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>`;
+      if (kind === "toggle") return `<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>`;
+      return `<svg viewBox="0 0 24 24"><path d="M12 6v12"></path><path d="M6 12h12"></path></svg>`;
+    };
+
+    let toastTimer = null;
+
+    const showToast = (message, kind = "info") => {
+      const el = document.createElement("div");
+      el.className = "toast";
+      el.innerHTML = `<div class="icon">${toastIcon(kind)}</div><div class="msg">${message}</div>`;
+      toastsEl.appendChild(el);
+
+      const maxToasts = 3;
+      while (toastsEl.children.length > maxToasts){
+        toastsEl.removeChild(toastsEl.firstChild);
+      }
+
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        el.classList.add("out");
+        window.setTimeout(() => {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 180);
+      }, 1600);
+    };
+
+    const stateName = (code) => {
+      const opt = Array.from(stateSelect.options).find(o => o.value === code);
+      return opt ? opt.textContent : code;
+    };
+
+    const normalizeRange = (a, b) => (a <= b ? { start:a, end:b } : { start:b, end:a });
+    const cloneVacation = (arr) => arr.map(r => ({ start:r.start, end:r.end }));
+
+    const mergeOverlaps = (ranges) => {
+      const norm = ranges
+        .map(r => normalizeRange(r.start, r.end))
+        .sort((x,y) => x.start.localeCompare(y.start));
+
+      const out = [];
+      for (const r of norm){
+        if (!out.length){
+          out.push({ start:r.start, end:r.end });
+          continue;
+        }
+        const last = out[out.length - 1];
+        const lastEndPlus1 = toISO(addDays(fromISO(last.end), 1));
+        if (r.start <= lastEndPlus1){
+          if (r.end > last.end) last.end = r.end;
+        } else {
+          out.push({ start:r.start, end:r.end });
+        }
+      }
+      return out;
+    };
+
+    const rangeDaysClipped = (year, startISO, endISO) => {
+      const a = startOfDay(fromISO(startISO));
+      const b = startOfDay(fromISO(endISO));
+      const out = [];
+      let cur = a <= b ? a : b;
+      const end = a <= b ? b : a;
+      while (cur <= end){
+        if (cur.getFullYear() === year) out.push(toISO(cur));
+        cur = addDays(cur, 1);
+      }
+      return out;
+    };
+
+    const rangesToSetClipped = (year, ranges) => {
+      const s = new Set();
+      for (const r of ranges){
+        const nr = normalizeRange(r.start, r.end);
+        for (const iso of rangeDaysClipped(year, nr.start, nr.end)) s.add(iso);
+      }
+      return s;
+    };
+
+    const holidayMapForState = (year, stateCode) => {
+      const map = new Map();
+      const yearData = dataCache.data[String(year)];
+      if (!yearData || !Array.isArray(yearData.holidays)) return map;
+      for (const h of yearData.holidays){
+        if (h && typeof h.date === "string" && Array.isArray(h.states) && h.states.includes(stateCode)){
+          map.set(h.date, h.name || "Feiertag");
+        }
+      }
+      return map;
+    };
+
+    const computeBridgeDays = (year, holidayMap) => {
+      const bridge = new Map();
+
+      const addBridge = (iso) => {
+        const d = fromISO(iso);
+        if (d.getFullYear() !== year) return;
+        if (isWeekend(d)) return;
+        if (holidayMap.has(iso)) return;
+        bridge.set(iso, true);
+      };
+
+      for (const [iso] of holidayMap.entries()){
+        const d = fromISO(iso);
+        if (d.getFullYear() !== year) continue;
+        const dow = dayOfWeekMon0(d);
+        if (dow === 1) addBridge(toISO(addDays(d, -1)));
+        if (dow === 3) addBridge(toISO(addDays(d, 1)));
+      }
+
+      return bridge;
+    };
+
+    const workingDay = (iso, holidayMap) => {
+      const d = fromISO(iso);
+      if (isWeekend(d)) return false;
+      if (holidayMap.has(iso)) return false;
+      return true;
+    };
+
+    const toSharePayload = () => {
+      return {
+        y: state.selectedYear,
+        s: state.selectedState,
+        a: state.perYear[String(state.selectedYear)] ? state.perYear[String(state.selectedYear)].available : state.available,
+        u: state.ui.holidays ? 1 : 0,
+        b: state.ui.bridge ? 1 : 0,
+        f: state.ui.school ? 1 : 0,
+        v: mergeOverlaps(state.perYear[String(state.selectedYear)] ? state.perYear[String(state.selectedYear)].vacation : state.vacation)
+      };
+    };
+
+    const encodeShare = (obj) => {
+      const json = JSON.stringify(obj);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    };
+
+    const decodeShare = (s) => {
+      const b64 = s.replace(/-/g,"+").replace(/_/g,"/");
+      const pad = b64.length % 4 ? "=".repeat(4 - (b64.length % 4)) : "";
+      const json = decodeURIComponent(escape(atob(b64 + pad)));
+      return JSON.parse(json);
+    };
+
+    const applySharePayload = (p) => {
+      if (!p || typeof p !== "object") return;
+      if (!Number.isFinite(p.y)) return;
+      if (!dataCache.years.includes(p.y)) return;
+
+      state.selectedYear = p.y;
+      if (typeof p.s === "string" && STATES.includes(p.s)) state.selectedState = p.s;
+
+      state.ui.holidays = !!p.u;
+      state.ui.bridge = !!p.b;
+      state.ui.school = !!p.f;
+
+      ensureYearBucket(state.selectedYear);
+
+      if (typeof p.a === "number") state.perYear[String(state.selectedYear)].available = Math.max(0, Math.min(100, p.a));
+      if (Array.isArray(p.v)) state.perYear[String(state.selectedYear)].vacation = mergeOverlaps(p.v.filter(r => r && typeof r.start === "string" && typeof r.end === "string"));
+    };
+
+    const tryLoadFromUrl = () => {
+      const url = new URL(window.location.href);
+      const s = url.searchParams.get("s");
+      if (!s) return false;
+      try{
+        const payload = decodeShare(s);
+        applySharePayload(payload);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    const state = {
+      selectedState: "BE",
+      selectedYear: 2026,
+      available: 30,
+      vacation: [],
+      perYear: {},
+      ui: { holidays:true, bridge:true, school:true }
+    };
+
+    const ensureYearBucket = (year) => {
+      const y = String(year);
+      if (!state.perYear[y]){
+        state.perYear[y] = { available: state.available, vacation: [] };
+      }
+      state.perYear[y].vacation = mergeOverlaps(state.perYear[y].vacation);
+    };
+
+    const getCurrentYearVacation = () => {
+      ensureYearBucket(state.selectedYear);
+      return state.perYear[String(state.selectedYear)].vacation;
+    };
+
+    const setCurrentYearVacation = (ranges) => {
+      ensureYearBucket(state.selectedYear);
+      state.perYear[String(state.selectedYear)].vacation = mergeOverlaps(ranges);
+    };
+
+    const getCurrentYearAvailable = () => {
+      ensureYearBucket(state.selectedYear);
+      return state.perYear[String(state.selectedYear)].available;
+    };
+
+    const setCurrentYearAvailable = (n) => {
+      ensureYearBucket(state.selectedYear);
+      state.perYear[String(state.selectedYear)].available = n;
+    };
+
+    const undoStack = [];
+    const redoStack = [];
+    const HISTORY_LIMIT = 50;
+
+    const pushHistory = () => {
+      undoStack.push(cloneVacation(getCurrentYearVacation()));
+      if (undoStack.length > HISTORY_LIMIT) undoStack.shift();
+      redoStack.length = 0;
+      updateTopButtons();
+    };
+
+    const updateTopButtons = () => {
+      undoBtn.disabled = undoStack.length === 0;
+      redoBtn.disabled = redoStack.length === 0;
+      trashBtn.disabled = getCurrentYearVacation().length === 0;
+    };
+
+    const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+    const load = () => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try{
+        const p = JSON.parse(raw);
+        if (!p || typeof p !== "object") return;
+        if (typeof p.selectedState === "string" && STATES.includes(p.selectedState)) state.selectedState = p.selectedState;
+        if (Number.isFinite(p.selectedYear)) state.selectedYear = p.selectedYear;
+        if (p.ui && typeof p.ui === "object"){
+          if (typeof p.ui.holidays === "boolean") state.ui.holidays = p.ui.holidays;
+          if (typeof p.ui.bridge === "boolean") state.ui.bridge = p.ui.bridge;
+          if (typeof p.ui.school === "boolean") state.ui.school = p.ui.school;
+        }
+        if (p.perYear && typeof p.perYear === "object"){
+          state.perYear = p.perYear;
+        } else {
+          state.perYear = {};
+        }
+      } catch {}
+    };
+
+    const applyControls = () => {
+      stateSelect.value = state.selectedState;
+      yearSelect.value = String(state.selectedYear);
+      availableDaysInput.value = String(getCurrentYearAvailable());
+      toggleHolidays.checked = state.ui.holidays;
+      toggleBridge.checked = state.ui.bridge;
+      toggleSchool.checked = state.ui.school;
+    };
+
+    const isoToCell = new Map();
+    let rangeStartISO = null;
+    let hoverISO = null;
+
+    const buildCalendar = () => {
+      monthsEl.innerHTML = "";
+      isoToCell.clear();
+
+      const year = state.selectedYear;
+
+      for (let m=0; m<12; m++){
+        const month = document.createElement("section");
+        month.className = "month";
+
+        const top = document.createElement("div");
+        top.className = "monthTop";
+        top.innerHTML = `<div class="name">${MONTHS_DE[m]}</div><div class="hintSmall" id="mh-${m}">—</div>`;
+        month.appendChild(top);
+
+        const dow = document.createElement("div");
+        dow.className = "dow";
+        for (const x of DOW_DE){
+          const el = document.createElement("div");
+          el.textContent = x;
+          dow.appendChild(el);
+        }
+        month.appendChild(dow);
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        const first = new Date(year, m, 1);
+        const offset = dayOfWeekMon0(first);
+
+        for (let i=0; i<offset; i++){
+          const c = document.createElement("div");
+          c.className = "cell muted";
+          c.innerHTML = `<div class="d"></div>`;
+          grid.appendChild(c);
+        }
+
+        const lastDay = new Date(year, m+1, 0).getDate();
+        for (let day=1; day<=lastDay; day++){
+          const d = new Date(year, m, day);
+          const iso = toISO(d);
+
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.dataset.iso = iso;
+
+          const dn = document.createElement("div");
+          dn.className = "d";
+          dn.textContent = String(day);
+          cell.appendChild(dn);
+
+          grid.appendChild(cell);
+          isoToCell.set(iso, cell);
+        }
+
+        month.appendChild(grid);
+        monthsEl.appendChild(month);
+      }
+
+      attachCellEvents();
+    };
+
+    const attachCellEvents = () => {
+      for (const [iso, cell] of isoToCell.entries()){
+        cell.addEventListener("mouseenter", () => {
+          hoverISO = iso;
+          if (rangeStartISO) updateDecorations();
+        });
+        cell.addEventListener("mouseleave", () => {
+          hoverISO = null;
+          if (rangeStartISO) updateDecorations();
+        });
+
+        cell.addEventListener("click", () => {
+          if (!rangeStartISO){
+            rangeStartISO = iso;
+            hoverISO = iso;
+            updateDecorations();
+            return;
+          }
+
+          const r = normalizeRange(rangeStartISO, iso);
+          pushHistory();
+          const v = getCurrentYearVacation().slice();
+          v.push(r);
+          setCurrentYearVacation(v);
+
+          rangeStartISO = null;
+          hoverISO = null;
+
+          save();
+          updateAll();
+          showToast("Zeitraum hinzugefügt", "toggle");
+        });
+      }
+
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape"){
+          if (rangeStartISO){
+            rangeStartISO = null;
+            hoverISO = null;
+            updateAll();
+            showToast("Auswahl abgebrochen", "info");
+          }
+        }
+      });
+    };
+
+    const clearCell = (cell) => {
+      cell.classList.remove("weekend","holiday","bridge","vac","preview","school");
+    };
+
+    const monthHint = (m, holidayMap, bridgeMap, schoolSet) => {
+      const year = state.selectedYear;
+      const first = new Date(year, m, 1);
+      const last = new Date(year, m+1, 0);
+      let h=0,b=0,f=0;
+
+      for (let d = startOfDay(first); d <= last; d = addDays(d,1)){
+        const iso = toISO(d);
+        if (holidayMap.has(iso)) h++;
+        if (bridgeMap.has(iso)) b++;
+        if (schoolSet.has(iso)) f++;
+      }
+
+      const parts = [];
+      if (state.ui.holidays && toggleHolidays.checked && h) parts.push(`${h} F`);
+      if (state.ui.bridge && toggleBridge.checked && b) parts.push(`${b} B`);
+      if (state.ui.school && toggleSchool.checked && f) parts.push(`${f} S`);
+      return parts.length ? parts.join(" · ") : "—";
+    };
+
+    const getSchoolRanges = (year, stateCode) => {
+      const yearData = dataCache.data[String(year)];
+      if (!yearData || !yearData.school || typeof yearData.school !== "object") return [];
+      const arr = yearData.school[stateCode];
+      return Array.isArray(arr) ? arr : [];
+    };
+
+    const updateDecorations = () => {
+      const year = state.selectedYear;
+
+      const holidayMap = holidayMapForState(year, state.selectedState);
+      const bridgeMap = computeBridgeDays(year, holidayMap);
+
+      const vacMerged = mergeOverlaps(getCurrentYearVacation());
+      const vacSet = rangesToSetClipped(year, vacMerged);
+
+      const schoolAutoRanges = getSchoolRanges(year, state.selectedState);
+      const schoolSet = (state.ui.school && toggleSchool.checked)
+        ? rangesToSetClipped(year, mergeOverlaps(schoolAutoRanges))
+        : new Set();
+
+      let previewSet = new Set();
+      if (rangeStartISO && hoverISO){
+        const pr = normalizeRange(rangeStartISO, hoverISO);
+        previewSet = new Set(rangeDaysClipped(year, pr.start, pr.end));
+      }
+
+      for (let m=0; m<12; m++){
+        const el = document.getElementById(`mh-${m}`);
+        if (el) el.textContent = monthHint(m, holidayMap, bridgeMap, schoolSet);
+      }
+
+      for (const [iso, cell] of isoToCell.entries()){
+        clearCell(cell);
+
+        const d = fromISO(iso);
+        if (isWeekend(d)) cell.classList.add("weekend");
+
+        if (state.ui.holidays && toggleHolidays.checked && holidayMap.has(iso)){
+          cell.classList.add("holiday");
+        }
+
+        if (state.ui.bridge && toggleBridge.checked && bridgeMap.has(iso)){
+          cell.classList.add("bridge");
+        }
+
+        if (schoolSet.has(iso)){
+          cell.classList.add("school");
+        }
+
+        if (vacSet.has(iso)){
+          cell.classList.add("vac");
+        }
+
+        if (previewSet.has(iso)){
+          cell.classList.add("preview");
+        }
+      }
+
+      const metaParts = [];
+      metaParts.push(`Bundesland: ${stateName(state.selectedState)}`);
+      if (rangeStartISO){
+        metaParts.push(`Auswahl läuft: ${toDE(rangeStartISO)} → ${toDE(hoverISO)} (ESC abbrechen)`);
+      }
+      calMetaEl.textContent = metaParts.join(" · ");
+    };
+
+    const updateDashboard = () => {
+      const year = state.selectedYear;
+      const holidayMap = holidayMapForState(year, state.selectedState);
+
+      const vacMerged = mergeOverlaps(getCurrentYearVacation());
+      const vacSet = rangesToSetClipped(year, vacMerged);
+
+      let used = 0;
+      for (const iso of vacSet){
+        if (workingDay(iso, holidayMap)) used++;
+      }
+
+      const avail = getCurrentYearAvailable();
+      const left = avail - used;
+      const free = vacSet.size;
+
+      dashUsedEl.textContent = String(used);
+      dashLeftEl.textContent = String(left);
+      dashFreeEl.textContent = String(free);
+
+      dashLeftEl.classList.toggle("neg", left < 0);
+
+      if (!rangeStartISO){
+        const parts = [];
+        parts.push(`Bundesland: ${stateName(state.selectedState)}`);
+        parts.push(`Gesetzt: ${used} · Rest: ${left} · Freie Tage: ${free}`);
+        calMetaEl.textContent = parts.join(" · ");
+      }
+    };
+
+    const updateRangesList = () => {
+      const year = state.selectedYear;
+      const merged = mergeOverlaps(getCurrentYearVacation());
+      rangesTitleEl.textContent = `Zeiträume (${merged.length})`;
+
+      if (merged.length === 0){
+        rangesEmptyEl.style.display = "block";
+        rangesTableEl.style.display = "none";
+        rangesBodyEl.innerHTML = "";
+        copyRangesBtn.disabled = true;
+        return;
+      }
+
+      rangesEmptyEl.style.display = "none";
+      rangesTableEl.style.display = "table";
+      copyRangesBtn.disabled = false;
+
+      rangesBodyEl.innerHTML = "";
+      for (let i=0; i<merged.length; i++){
+        const r = merged[i];
+        const days = rangeDaysClipped(year, r.start, r.end).length;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<tr><td>${i+1}</td><td>${toDE(r.start)}</td><td>${toDE(r.end)}</td><td>${days}</td><td class="rowTrashCell"><button class="rowTrashBtn tip" type="button" aria-label="Diesen Zeitraum löschen" data-tip="Diesen Zeitraum löschen" data-index="${i}"><svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 16h10l1-16"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
+        rangesBodyEl.appendChild(tr);
+      }
+    };
+
+    const rangesTextForClipboard = () => {
+      const year = state.selectedYear;
+      const merged = mergeOverlaps(getCurrentYearVacation());
+      if (!merged.length) return "";
+      const lines = [];
+      for (let i=0; i<merged.length; i++){
+        const r = merged[i];
+        const days = rangeDaysClipped(year, r.start, r.end).length;
+        lines.push(`${i+1}. ${toDE(r.start)} - ${toDE(r.end)} (${days} Tage)`);
+      }
+      return lines.join("\n");
+    };
+
+    const updateShareLink = () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set("s", encodeShare(toSharePayload()));
+      shareLinkEl.value = url.toString();
+    };
+
+    const updateYearTitle = () => {
+      yearTitleEl.textContent = String(state.selectedYear);
+    };
+
+    const updateAll = () => {
+      state.selectedState = stateSelect.value;
+      state.selectedYear = Number(yearSelect.value);
+
+      ensureYearBucket(state.selectedYear);
+
+      state.ui.holidays = !!toggleHolidays.checked;
+      state.ui.bridge = !!toggleBridge.checked;
+      state.ui.school = !!toggleSchool.checked;
+
+      save();
+      updateYearTitle();
+      updateDecorations();
+      updateDashboard();
+      updateTopButtons();
+      updateRangesList();
+      updateShareLink();
+    };
+
+    copyRangesBtn.addEventListener("click", async () => {
+      const txt = rangesTextForClipboard();
+      if (!txt) return;
+      let ok = false;
+      try{
+        await navigator.clipboard.writeText(txt);
+        ok = true;
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try{ ok = document.execCommand("copy"); } catch {}
+        document.body.removeChild(ta);
+      }
+      if (ok) showToast("Liste kopiert", "copy");
+    });
+
+    shareLinkEl.addEventListener("click", async () => {
+      shareLinkEl.focus();
+      shareLinkEl.select();
+      let ok = false;
+      try{
+        await navigator.clipboard.writeText(shareLinkEl.value);
+        ok = true;
+      } catch {}
+      if (ok) showToast("Sharing-Link kopiert", "copy");
+    });
+
+    rangesBodyEl.addEventListener("click", (ev) => {
+      const btn = ev.target.closest(".rowTrashBtn");
+      if (!btn) return;
+      const idx = Number(btn.dataset.index);
+      const merged = mergeOverlaps(getCurrentYearVacation());
+      if (!Number.isFinite(idx) || idx < 0 || idx >= merged.length) return;
+
+      pushHistory();
+      merged.splice(idx, 1);
+      setCurrentYearVacation(merged);
+      rangeStartISO = null;
+      hoverISO = null;
+      save();
+      updateAll();
+      showToast("Zeitraum gelöscht", "trash");
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (!undoStack.length) return;
+      redoStack.push(cloneVacation(getCurrentYearVacation()));
+      setCurrentYearVacation(undoStack.pop());
+      rangeStartISO = null;
+      hoverISO = null;
+      save();
+      updateAll();
+      showToast("Undo", "undo");
+    });
+
+    redoBtn.addEventListener("click", () => {
+      if (!redoStack.length) return;
+      undoStack.push(cloneVacation(getCurrentYearVacation()));
+      setCurrentYearVacation(redoStack.pop());
+      rangeStartISO = null;
+      hoverISO = null;
+      save();
+      updateAll();
+      showToast("Redo", "redo");
+    });
+
+    trashBtn.addEventListener("click", () => {
+      if (!getCurrentYearVacation().length) return;
+      pushHistory();
+      setCurrentYearVacation([]);
+      rangeStartISO = null;
+      hoverISO = null;
+      save();
+      updateAll();
+      showToast("Auswahl gelöscht", "trash");
+    });
+
+    const onToggleToast = (label, enabled) => {
+      showToast(`${label} ${enabled ? "aktiviert" : "deaktiviert"}`, "toggle");
+    };
+
+    stateSelect.addEventListener("change", () => {
+      rangeStartISO = null;
+      hoverISO = null;
+      updateAll();
+      showToast(`Bundesland: ${stateName(state.selectedState)}`, "toggle");
+    });
+
+    yearSelect.addEventListener("change", () => {
+      rangeStartISO = null;
+      hoverISO = null;
+      undoStack.length = 0;
+      redoStack.length = 0;
+
+      state.selectedYear = Number(yearSelect.value);
+      ensureYearBucket(state.selectedYear);
+      availableDaysInput.value = String(getCurrentYearAvailable());
+
+      buildCalendar();
+      updateTopButtons();
+      updateAll();
+
+      showToast(`Jahr: ${state.selectedYear}`, "toggle");
+    });
+
+    availableDaysInput.addEventListener("input", () => {
+      const n = Math.max(0, Math.min(100, Number(availableDaysInput.value || 0)));
+      setCurrentYearAvailable(n);
+      save();
+      updateAll();
+    });
+
+    toggleHolidays.addEventListener("change", () => {
+      updateAll();
+      onToggleToast("Feiertage", toggleHolidays.checked);
+    });
+
+    toggleBridge.addEventListener("change", () => {
+      updateAll();
+      onToggleToast("Brückentage", toggleBridge.checked);
+    });
+
+    toggleSchool.addEventListener("change", () => {
+      updateAll();
+      onToggleToast("Schulferien", toggleSchool.checked);
+    });
+
+    const populateYearSelect = () => {
+      yearSelect.innerHTML = "";
+      for (const y of dataCache.years){
+        const opt = document.createElement("option");
+        opt.value = String(y);
+        opt.textContent = String(y);
+        yearSelect.appendChild(opt);
+      }
+    };
+
+    const dataCache = { years: [], states: [], data: {} };
+
+    const loadDataJson = async () => {
+      const res = await fetch("./data.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error("data.json konnte nicht geladen werden");
+      const json = await res.json();
+      dataCache.years = Array.isArray(json.years) ? json.years.filter(n => Number.isFinite(n)) : [];
+      dataCache.states = Array.isArray(json.states) ? json.states : [];
+      dataCache.data = (json.data && typeof json.data === "object") ? json.data : {};
+      if (!dataCache.years.length){
+        dataCache.years = [2026, 2027, 2028, 2029, 2030];
+      }
+    };
+
+    const init = async () => {
+      await loadDataJson();
+
+      load();
+
+      if (!dataCache.years.includes(state.selectedYear)){
+        state.selectedYear = dataCache.years[0];
+      }
+
+      populateYearSelect();
+
+      const fromUrl = tryLoadFromUrl();
+      if (fromUrl) save();
+
+      ensureYearBucket(state.selectedYear);
+
+      applyControls();
+      buildCalendar();
+      updateTopButtons();
+      updateAll();
+    };
+
+    init();
+  </script>
+</body>
+</html>
