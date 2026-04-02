@@ -6,41 +6,41 @@
   <title>Urlaubsplaner</title>
   <style>
     :root{
-      --bg:#f6f7fb;
+      --bg:#f4f7fb;
+      --bg2:#eef3f9;
       --card:#ffffff;
-      --stroke:#e5e7eb;
-      --stroke2:#d1d5db;
-
-      --text:#0f172a;
-      --muted:#475569;
-
-      --shadow: 0 10px 25px rgba(15,23,42,.08);
-      --shadow2: 0 6px 18px rgba(15,23,42,.06);
-
-      --weekendBg:#f3f4f6;
-
+      --cardStrong:#ffffff;
+      --surface:#f8fbff;
+      --surface2:#f6f8fc;
+      --stroke:#dbe4ef;
+      --stroke2:#c8d4e3;
+      --text:#1f2937;
+      --muted:#748092;
+      --accent:#5b8def;
+      --accentSoft:rgba(91,141,239,.12);
+      --accentStrong:#4f7fe0;
+      --accentText:#f8fbff;
+      --inkSoft:rgba(31,41,55,.05);
+      --shadow:0 10px 30px rgba(31,41,55,.06);
+      --shadow2:0 6px 18px rgba(31,41,55,.05);
+      --weekendBg:#f7f9fc;
       --holidayBg:#fee2e2;
       --holidaySt:#fecaca;
-
       --bridgeBg:#dbeafe;
       --bridgeSt:#bfdbfe;
-
       --vacBg:#dcfce7;
       --vacSt:#bbf7d0;
-
-      --previewBg: rgba(34,197,94,.14);
-      --previewSt: rgba(34,197,94,.25);
-
-      --schoolBg:#fef9c3;
+      --previewBg:rgba(15,98,254,.12);
+      --previewSt:rgba(15,98,254,.24);
+      --schoolBg:#fef3c7;
       --schoolSt:#fde68a;
-
-      --focus: rgba(2,132,199,.10);
-      --focusSt: rgba(2,132,199,.20);
-
-      --toastBg:#0f172a;
-      --toastText:#f8fafc;
-      --toastBorder: rgba(255,255,255,.10);
-
+      --focus:rgba(15,98,254,.12);
+      --focusSt:rgba(15,98,254,.26);
+      --toastBg:#111827;
+      --toastText:#f9fafb;
+      --toastBorder:rgba(255,255,255,.08);
+      --tooltipBg:#0f172a;
+      --tooltipText:#f8fafc;
       --neg:#dc2626;
     }
 
@@ -48,71 +48,99 @@
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
-      background: var(--bg);
+      background: linear-gradient(180deg, var(--bg), var(--bg2));
       overflow-x:hidden;
     }
-
     .container {
-        max-width: 1520px;
-        margin: 18px auto 34px;
-        padding: 0 16px;
+        max-width: 1720px;
+        margin: 18px auto 24px;
+        padding: 0 20px;
         display: grid;
-        grid-template-columns: 530px minmax(0, 1fr);
-        gap: 14px;
+        grid-template-columns: 496px minmax(0, 1fr);
+        gap: 16px;
         align-items: start;
         width: 100%;
+        animation: pageIn .55s cubic-bezier(.22,1,.36,1);
     }
     @media (max-width: 1100px){
       .container{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px){
+      .container{
+        margin: 12px auto 24px;
+        padding: 0 12px;
+      }
     }
 
     .card{
       background: var(--card);
       border: 1px solid var(--stroke);
-      border-radius: 12px;
+      border-radius: 10px;
       box-shadow: var(--shadow);
-      overflow:hidden;
+      overflow:visible;
       min-width:0;
+      position: sticky;
+      top: 16px;
+      animation: panelIn .5s cubic-bezier(.22,1,.36,1);
+    }
+    @media (max-width: 1100px){
+      .card{ position: static; }
     }
 
     .cardHeader{
-      padding: 14px 14px 10px;
+      padding: 18px 18px 12px;
       border-bottom: 1px solid var(--stroke);
+      background: var(--cardStrong);
+      border-top-left-radius:10px;
+      border-top-right-radius:10px;
     }
 
     .title{
       display:flex;
       flex-direction:column;
-      gap: 2px;
+      gap: 4px;
       min-width:0;
+    }
+    .eyebrow{
+      display:none;
     }
     .title .t{
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing:.2px;
+      font-size: 20px;
+      font-weight: 650;
+      letter-spacing:-.03em;
+      line-height:1;
+      max-width:none;
     }
     .title .s{
-      font-size: 12.5px;
-      color: var(--muted);
-      line-height:1.25;
-      min-width:0;
+      display:none;
     }
 
     .cardBody{
-      padding: 12px 14px 14px;
+      padding: 14px;
       display:flex;
       flex-direction:column;
       gap: 12px;
       min-width:0;
     }
 
-    .grid2{
+    .controlsPanel{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      padding:12px;
+      border:1px solid var(--stroke);
+      border-radius:8px;
+      background:linear-gradient(180deg, rgba(248,251,255,.9), rgba(255,255,255,.95));
+    }
+    .controlsRow{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 120px;
       gap: 10px;
       min-width:0;
+    }
+    @media (max-width: 640px){
+      .controlsRow{ grid-template-columns: 1fr; }
     }
 
     label{
@@ -120,7 +148,9 @@
       flex-direction:column;
       gap: 7px;
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 11.5px;
+      font-weight:650;
+      letter-spacing:.01em;
       min-width:0;
     }
 
@@ -130,9 +160,10 @@
       border: 1px solid var(--stroke);
       background: #ffffff;
       color: var(--text);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 13.5px;
+      border-radius: 9px;
+      padding: 11px 12px;
+      font-size: 13px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
       transition: border-color .12s ease, box-shadow .12s ease;
       min-width:0;
       width:100%;
@@ -144,28 +175,35 @@
 
     .row2{
       display:grid;
-      grid-template-columns: 1fr 150px;
+      grid-template-columns: minmax(0, 1fr) 126px;
       gap: 10px;
       min-width:0;
+    }
+    #stateSelect{
+      font-size:12.5px;
+      padding-right:34px;
     }
 
     .dashboard{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
       min-width:0;
     }
-    @media (max-width: 1100px){
+    @media (max-width: 760px){
+      .dashboard{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px){
       .dashboard{ grid-template-columns: 1fr; }
     }
 
     .tile{
-      padding: 12px 12px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid var(--stroke);
       background: #ffffff;
-      box-shadow: var(--shadow2);
-      min-height: 78px;
+      box-shadow: none;
+      min-height: 76px;
       min-width:0;
       overflow:hidden;
     }
@@ -177,17 +215,17 @@
       text-overflow:ellipsis;
     }
     .tile .v{
-      font-weight: 950;
-      font-size: 20px;
-      margin-top: 6px;
+      font-weight: 650;
+      font-size: 23px;
+      margin-top: 4px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
     .tile .s{
       color: var(--muted);
-      font-size: 12px;
-      margin-top: 4px;
+      font-size: 11.5px;
+      margin-top: 2px;
       line-height:1.2;
       white-space:nowrap;
       overflow:hidden;
@@ -198,67 +236,90 @@
     }
 
     .togglesRow{
-      display:flex;
-      gap: 10px;
-      padding: 10px;
-      border: 1px solid var(--stroke);
-      border-radius: 10px;
-      background: #f8fafc;
-      flex-wrap:nowrap;
+      display:grid;
+      gap: 12px;
+      padding: 4px 0 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       min-width:0;
-    }
-    @media (max-width: 520px){
-      .togglesRow{ flex-wrap:wrap; }
     }
 
     .toggle{
       display:flex;
       align-items:center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
+      justify-content:space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: 14px;
       border: 1px solid var(--stroke);
       background: #ffffff;
       cursor:pointer;
       user-select:none;
-      flex: 1 1 0;
-      min-width: 0;
-      overflow:hidden;
+      min-width:0;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .toggle:hover{
+      border-color: rgba(91,141,239,.45);
+      box-shadow: 0 10px 24px rgba(91,141,239,.08);
     }
     .toggle input{
-      width: 18px;
-      height: 18px;
-      accent-color: #16a34a;
+      appearance:none;
+      -webkit-appearance:none;
+      position:relative;
+      width:52px;
+      height:30px;
+      margin:0;
+      border-radius:999px;
+      border:1px solid #cfd8e6;
+      background:#e8edf4;
       cursor:pointer;
-      flex: 0 0 auto;
+      transition: background .18s ease, border-color .18s ease;
+      flex:0 0 auto;
+    }
+    .toggle input::after{
+      content:"";
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background:#ffffff;
+      box-shadow:0 1px 3px rgba(15,23,42,.18);
+      transition: transform .18s ease;
+    }
+    .toggle input:checked{
+      background:var(--accent);
+      border-color:var(--accentStrong);
+    }
+    .toggle input:checked::after{
+      transform:translateX(22px);
+    }
+    .toggle input:disabled{
+      opacity:.5;
+      cursor:not-allowed;
     }
     .toggle .m{
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 520;
       color: var(--text);
       line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
+      flex:1 1 auto;
     }
 
     .hint{
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px dashed var(--stroke2);
-      background: #ffffff;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height:1.35;
-      min-width:0;
+      display:none;
     }
-
     .listCard{
       border: 1px solid var(--stroke);
-      border-radius: 10px;
-      background:#ffffff;
-      box-shadow: var(--shadow2);
-      overflow:hidden;
+      border-radius: 8px;
+      background:transparent;
+      box-shadow: none;
+      overflow:visible;
       min-width:0;
     }
     .listTop{
@@ -266,14 +327,14 @@
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       border-bottom: 1px solid var(--stroke);
-      background:#f8fafc;
+      background:transparent;
       min-width:0;
     }
     .listTop .h{
-      font-size: 13px;
-      font-weight: 950;
+      font-size: 12px;
+      font-weight: 720;
       color: var(--text);
       white-space:nowrap;
       overflow:hidden;
@@ -284,12 +345,12 @@
       background: #ffffff;
       color: var(--text);
       padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 12.5px;
-      font-weight: 950;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
       cursor:pointer;
       transition: background .12s ease, border-color .12s ease, transform .06s ease, opacity .12s ease;
-      box-shadow: var(--shadow2);
+      box-shadow: none;
       flex:0 0 auto;
       display:flex;
       align-items:center;
@@ -310,16 +371,17 @@
     }
 
     .tableWrap{
-      max-height: 220px;
-      overflow: auto;
+      max-height: none;
+      overflow-x: hidden;
+      overflow-y: visible;
       -webkit-overflow-scrolling: touch;
     }
     table{
       width:100%;
       border-collapse:separate;
       border-spacing:0;
-      font-size: 12.5px;
-      table-layout: fixed;
+      font-size: 11.5px;
+      table-layout: auto;
     }
     thead th{
       position: sticky;
@@ -329,23 +391,23 @@
       color: var(--muted);
       text-align:left;
       font-weight: 900;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-bottom: 1px solid var(--stroke);
       white-space:nowrap;
     }
     tbody td{
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-bottom: 1px solid var(--stroke);
       white-space:nowrap;
-      overflow:hidden;
+      overflow:visible;
       text-overflow:ellipsis;
-      max-width: 0;
+      max-width: none;
     }
     tbody tr:last-child td{ border-bottom:none; }
     .empty{
-      padding: 12px;
+      padding: 10px 12px;
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 11.5px;
     }
 
     .rowTrashCell{
@@ -363,7 +425,7 @@
     .rowTrashBtn{
       width: 30px;
       height: 30px;
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1px solid var(--stroke);
       background: #ffffff;
       box-shadow: var(--shadow2);
@@ -391,70 +453,19 @@
       fill:none;
     }
 
-    .tip{
-      position:relative;
-    }
-    .tip[data-tip]::after{
-      content: attr(data-tip);
-      position:absolute;
-      left: 50%;
-      bottom: calc(100% + 10px);
-      transform: translateX(-50%);
-      background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 18px 45px rgba(15,23,42,.35);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 12px;
-      line-height: 1.2;
-      white-space: normal;
-      max-width: 260px;
-      text-align: center;
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .12s ease, transform .12s ease;
-      z-index: 99999;
-    }
-    .tip[data-tip]::before{
-      content:"";
-      position:absolute;
-      left: 50%;
-      bottom: calc(100% + 4px);
-      transform: translateX(-50%);
-      width: 10px;
-      height: 10px;
-      background: #0f172a;
-      border-left: 1px solid rgba(255,255,255,.10);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      transform: translateX(-50%) rotate(45deg);
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .12s ease;
-      z-index: 99999;
-    }
-    .tip:hover::after,
-    .tip:focus-visible::after{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-2px);
-    }
-    .tip:hover::before,
-    .tip:focus-visible::before{
-      opacity: 1;
-    }
-
     .calendarCard{
       background: var(--card);
       border: 1px solid var(--stroke);
-      border-radius: 12px;
+      border-radius: 10px;
       box-shadow: var(--shadow);
-      overflow:hidden;
+      overflow:visible;
       min-width:0;
       width:100%;
+      animation: panelIn .62s cubic-bezier(.22,1,.36,1);
     }
 
     .calTop{
-      padding: 14px 14px 10px;
+      padding: 18px 18px 12px;
       border-bottom: 1px solid var(--stroke);
       display:flex;
       align-items:flex-start;
@@ -462,6 +473,9 @@
       gap: 12px;
       flex-wrap:wrap;
       min-width:0;
+      background: #ffffff;
+      border-top-left-radius:10px;
+      border-top-right-radius:10px;
     }
     .calTop .left{
       display:flex;
@@ -471,12 +485,13 @@
       max-width: 100%;
     }
     .calTop .year{
-      font-size: 15px;
-      font-weight: 950;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing:-.03em;
     }
     .calTop .meta{
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 11.5px;
       line-height:1.25;
       max-width: 100%;
       overflow:hidden;
@@ -499,12 +514,12 @@
       align-items:center;
     }
     .iconBtn{
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
       border: 1px solid var(--stroke);
       background: #ffffff;
-      box-shadow: var(--shadow2);
+      box-shadow: none;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -542,14 +557,27 @@
       display:flex;
       align-items:center;
       gap: 8px;
-      padding: 7px 10px;
+      padding: 6px 9px;
       border-radius: 999px;
       border: 1px solid var(--stroke);
-      background: #f8fafc;
+      background: #ffffff;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       user-select:none;
       white-space:nowrap;
+    }
+    .sectionIcon{
+      width:16px;
+      height:16px;
+      stroke: currentColor;
+      stroke-width:1.8;
+      fill:none;
+      flex:0 0 auto;
+    }
+    .listTop .h{
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
     .sw{
       width: 10px;
@@ -566,15 +594,15 @@
     .sw.f{ background: var(--schoolBg); border-color: var(--schoolSt); }
 
     .months{
-      padding: 12px;
+      padding: 14px;
       display:grid;
-      grid-template-columns: repeat(3, minmax(240px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+      gap: 14px;
       width:100%;
       min-width:0;
     }
     @media (max-width: 1280px){
-      .months{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+      .months{ grid-template-columns: 1fr; }
     }
     @media (max-width: 860px){
       .months{ grid-template-columns: 1fr; }
@@ -583,32 +611,33 @@
     .month{
       border: 1px solid var(--stroke);
       background: #ffffff;
-      border-radius: 10px;
+      border-radius: 6px;
       overflow:hidden;
-      box-shadow: var(--shadow2);
+      box-shadow: none;
       min-width:0;
+      animation: monthIn .45s cubic-bezier(.22,1,.36,1);
     }
 
     .monthTop{
-      padding: 12px 12px 10px;
+      padding: 14px 16px 10px;
       border-bottom: 1px solid var(--stroke);
       display:flex;
       justify-content:space-between;
       align-items:baseline;
       gap: 10px;
-      background: #f8fafc;
+      background: #ffffff;
       min-width:0;
     }
     .monthTop .name{
-      font-weight: 950;
-      font-size: 14px;
+      font-weight: 650;
+      font-size: 15px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
     .monthTop .hintSmall{
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11.5px;
       white-space:nowrap;
       flex:0 0 auto;
     }
@@ -616,27 +645,40 @@
     .dow{
       display:grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      padding: 10px 10px 8px;
+      gap: 0;
+      padding: 0;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing:.2px;
       user-select:none;
       min-width:0;
+    }
+    .dow div{
+      padding: 14px 8px;
+      text-align:center;
+      font-weight:700;
+      border-right: 1px solid var(--stroke);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .dow div:last-child{
+      border-right: 0;
     }
 
     .grid{
       display:grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      padding: 0 10px 10px;
+      gap: 0;
+      padding: 0;
       min-width:0;
     }
 
     .cell{
-      height: 40px;
-      border-radius: 4px;
-      border: 1px solid var(--stroke);
+      height: 52px;
+      border-radius: 0;
+      border-right: 1px solid var(--stroke);
+      border-bottom: 1px solid var(--stroke);
+      border-top: 0;
+      border-left: 0;
       background: #ffffff;
       display:flex;
       align-items:center;
@@ -648,22 +690,24 @@
       overflow:hidden;
       min-width: 0;
     }
+    .grid .cell:nth-child(7n){
+      border-right: 0;
+    }
     .cell:hover{
-      border-color: var(--stroke2);
-      background: #f8fafc;
+      background: #f9fbff;
     }
     .cell:active{ transform: translateY(1px); }
 
     .cell.muted{
       cursor:default;
       opacity:.35;
-      background: #f8fafc;
+      background: #fcfdff;
     }
-    .cell.muted:hover{ background:#f8fafc; border-color: var(--stroke); transform:none; }
+    .cell.muted:hover{ background:#fcfdff; transform:none; }
 
     .cell .d{
-      font-size: 13px;
-      font-weight: 950;
+      font-size: 14px;
+      font-weight: 720;
       z-index:2;
     }
 
@@ -682,55 +726,53 @@
 
     .toasts{
       position: fixed;
-      right: 14px;
-      bottom: 14px;
+      right: 12px;
+      bottom: 12px;
       display:flex;
       flex-direction:column;
-      gap: 10px;
-      z-index: 9999;
+      gap: 12px;
+      z-index: 10020;
       pointer-events:none;
-      max-width: min(360px, calc(100vw - 28px));
+      max-width: min(360px, calc(100vw - 24px));
     }
     .toast{
       pointer-events:none;
       background: var(--toastBg);
       color: var(--toastText);
       border: 1px solid var(--toastBorder);
-      border-radius: 12px;
-      box-shadow: 0 18px 45px rgba(15,23,42,.35);
-      padding: 10px 12px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(15,23,42,.34);
+      padding: 12px 13px;
       display:flex;
       gap: 10px;
       align-items:flex-start;
       opacity: 0;
       transform: translateY(8px);
       animation: toastIn .18s ease-out forwards;
-      overflow:hidden;
+      overflow:visible;
     }
     .toast .icon{
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       flex: 0 0 auto;
       margin-top: 1px;
-      border-radius: 6px;
+      border-radius: 999px;
       background: rgba(255,255,255,.10);
       display:flex;
       align-items:center;
       justify-content:center;
     }
     .toast .icon svg{
-      width: 12px;
-      height: 12px;
+      width: 13px;
+      height: 13px;
       stroke: var(--toastText);
       stroke-width: 2.2;
       fill:none;
     }
     .toast .msg{
       font-size: 12.5px;
-      line-height: 1.25;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      line-height: 1.4;
+      white-space:normal;
       min-width:0;
     }
     .toast.out{
@@ -741,6 +783,43 @@
     }
     @keyframes toastOut{
       to { opacity: 0; transform: translateY(8px); }
+    }
+    .tooltipLayer{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index: 10030;
+    }
+    .tooltipBubble{
+      position: fixed;
+      max-width: min(280px, calc(100vw - 20px));
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--tooltipBg);
+      color: var(--tooltipText);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 18px 44px rgba(15,23,42,.32);
+      font-size: 11.5px;
+      line-height: 1.35;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .12s ease, transform .12s ease;
+    }
+    .tooltipBubble.visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tooltipBubble::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-5px;
+      width:10px;
+      height:10px;
+      background: var(--tooltipBg);
+      border-right:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      transform: translateX(-50%) rotate(45deg);
     }
 
     #rangesTable th:nth-child(1){
@@ -763,7 +842,7 @@
 
     #rangesTable th:nth-child(2),
     #rangesTable th:nth-child(3){
-      width: 140px;
+      width: 132px;
     }
 
     #rangesTable td:nth-child(2),
@@ -772,6 +851,93 @@
       text-overflow: clip;
       max-width: none;
     }
+    .suggestionsList{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:10px;
+    }
+    .suggestionItem{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:12px;
+      border-radius:8px;
+      border:1px solid var(--stroke);
+      background: #ffffff;
+      width:100%;
+      cursor:pointer;
+      text-align:left;
+      transition: border-color .12s ease, box-shadow .12s ease, transform .06s ease, background .12s ease;
+      box-shadow: var(--shadow2);
+    }
+    .suggestionItem:hover{
+      border-color: var(--focusSt);
+      box-shadow: 0 10px 24px rgba(15,98,254,.08);
+      background: #f8fbff;
+    }
+    .suggestionItem:active{
+      transform: translateY(1px);
+    }
+    .suggestionItem:focus-visible{
+      outline:none;
+      border-color: var(--focusSt);
+      box-shadow: 0 0 0 4px var(--focus);
+    }
+    .suggestionMain{
+      min-width:0;
+    }
+    .suggestionMain .title{
+      font-size:13px;
+      font-weight:720;
+      color:var(--text);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .suggestionMain .meta{
+      margin-top:5px;
+      font-size:11.5px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .suggestionStat{
+      text-align:right;
+      min-width:76px;
+    }
+    .suggestionStat .free{
+      font-size:22px;
+      font-weight:760;
+      line-height:1;
+      color:var(--accentStrong);
+    }
+    .suggestionStat .used{
+      margin-top:4px;
+      font-size:11px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .suggestionCta{
+      margin-top:4px;
+      font-size:11px;
+      font-weight:700;
+      color:var(--accentStrong);
+    }
+    @keyframes pageIn{
+      from{ opacity:0; transform:translateY(12px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+    @keyframes panelIn{
+      from{ opacity:0; transform:translateY(14px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+    @keyframes monthIn{
+      from{ opacity:0; transform:translateY(10px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -779,59 +945,63 @@
     <aside class="card">
       <div class="cardHeader">
         <div class="title">
-          <div class="t">Urlaubsplaner</div>
-          <div class="s">Klick 1 = Start · Klick 2 = Ende · Zeitraum wird gesetzt</div>
+          <div class="t">Urlaub</div>
+          <div class="s">Jahr, Land, Tage.</div>
         </div>
       </div>
 
       <div class="cardBody">
-        <div class="grid2">
+        <div class="controlsPanel">
           <label>
-            Bundesland / Jahr
-            <div class="row2">
-              <select id="stateSelect">
-                <option value="BW">Baden-Württemberg</option>
-                <option value="BY">Bayern</option>
-                <option value="BE">Berlin</option>
-                <option value="BB">Brandenburg</option>
-                <option value="HB">Bremen</option>
-                <option value="HH">Hamburg</option>
-                <option value="HE">Hessen</option>
-                <option value="MV">Mecklenburg-Vorpommern</option>
-                <option value="NI">Niedersachsen</option>
-                <option value="NW">Nordrhein-Westfalen</option>
-                <option value="RP">Rheinland-Pfalz</option>
-                <option value="SL">Saarland</option>
-                <option value="SN">Sachsen</option>
-                <option value="ST">Sachsen-Anhalt</option>
-                <option value="SH">Schleswig-Holstein</option>
-                <option value="TH">Thüringen</option>
-              </select>
-              <select id="yearSelect"></select>
-            </div>
+            Land
+            <select id="stateSelect">
+              <option value="BW">Baden-Württemberg</option>
+              <option value="BY">Bayern</option>
+              <option value="BE">Berlin</option>
+              <option value="BB">Brandenburg</option>
+              <option value="HB">Bremen</option>
+              <option value="HH">Hamburg</option>
+              <option value="HE">Hessen</option>
+              <option value="MV">Mecklenburg-Vorpommern</option>
+              <option value="NI">Niedersachsen</option>
+              <option value="NW">Nordrhein-Westfalen</option>
+              <option value="RP">Rheinland-Pfalz</option>
+              <option value="SL">Saarland</option>
+              <option value="SN">Sachsen</option>
+              <option value="ST">Sachsen-Anhalt</option>
+              <option value="SH">Schleswig-Holstein</option>
+              <option value="TH">Thüringen</option>
+            </select>
           </label>
 
-          <label>
-            Verfügbare Urlaubstage
-            <input id="availableDays" type="number" min="0" max="100" step="1" value="30" />
-          </label>
+          <div class="controlsRow">
+            <label>
+              Jahr
+              <select id="yearSelect"></select>
+            </label>
+
+            <label>
+              Tage
+              <input id="availableDays" type="number" min="0" max="100" step="1" value="30" />
+            </label>
+          </div>
         </div>
 
         <div class="dashboard">
           <div class="tile">
-            <div class="k">Gesetzte Urlaubstage</div>
+            <div class="k">Genutzt</div>
             <div class="v" id="dashUsed">0</div>
-            <div class="s">Werktage (ohne WE/Feiertage)</div>
+            <div class="s">Urlaub</div>
           </div>
           <div class="tile">
-            <div class="k">Resturlaub</div>
+            <div class="k">Rest</div>
             <div class="v" id="dashLeft">30</div>
-            <div class="s">Verfügbar − gesetzt</div>
+            <div class="s">offen</div>
           </div>
           <div class="tile">
-            <div class="k">Freie Tage</div>
+            <div class="k">Frei</div>
             <div class="v" id="dashFree">0</div>
-            <div class="s">im Block inkl. WE/Feiertage</div>
+            <div class="s">gesamt</div>
           </div>
         </div>
 
@@ -854,13 +1024,17 @@
 
         <div class="listCard">
           <div class="listTop">
-            <div class="h" id="rangeTitle">Zeiträume (0)</div>
-            <button class="copyBtn" id="copyRangesBtn" disabled>
-              <svg viewBox="0 0 24 24">
-                <path d="M9 9h10v10H9z"></path>
-                <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+            <div class="h" id="rangeTitle">
+              <svg class="sectionIcon" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3.75h10.5A2.25 2.25 0 0 1 19.5 6v12a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 18V6a2.25 2.25 0 0 1 2.25-2.25Z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 8.25h7.5m-7.5 4.5h7.5m-7.5 4.5h4.5"/>
               </svg>
-              Kopieren
+              <span>Zeiträume (0)</span>
+            </div>
+            <button class="copyBtn" id="copyRangesBtn" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+              </svg>
             </button>
           </div>
           <div class="tableWrap" id="rangesWrap">
@@ -880,13 +1054,16 @@
           </div>
         </div>
 
-        <label>
-          Sharing-Link
-          <input id="shareLink" type="text" readonly />
-        </label>
-
-        <div class="hint">
-          Vorschau beim Auswählen. ESC bricht ab. Undo/Redo/Löschen oben rechts im Kalender.
+        <div class="listCard">
+          <div class="listTop">
+            <div class="h">
+              <svg class="sectionIcon" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m9.813 15.904 9.028-9.028a1.875 1.875 0 1 0-2.652-2.652L7.16 13.252a4.5 4.5 0 0 0-1.172 2.295l-.429 1.715a.75.75 0 0 0 .91.91l1.715-.429a4.5 4.5 0 0 0 2.295-1.172ZM15 6l3 3"/>
+              </svg>
+              <span>Vorschläge</span>
+            </div>
+          </div>
+          <div class="suggestionsList" id="suggestionsList"></div>
         </div>
       </div>
     </aside>
@@ -901,24 +1078,25 @@
         <div class="calRight">
           <div class="iconBtns">
             <button class="iconBtn" id="undoBtn" disabled aria-label="Undo">
-              <svg viewBox="0 0 24 24">
-                <path d="M9 14l-4-4 4-4"></path>
-                <path d="M5 10h9a5 5 0 1 1 0 10h-2"></path>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3.75 9.75 9 4.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 9.75h8.625a5.625 5.625 0 1 1 0 11.25H10.5"/>
               </svg>
             </button>
             <button class="iconBtn" id="redoBtn" disabled aria-label="Redo">
-              <svg viewBox="0 0 24 24">
-                <path d="M15 6l4 4-4 4"></path>
-                <path d="M19 10H10a5 5 0 1 0 0 10h2"></path>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m15 4.5 5.25 5.25L15 15"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 9.75H10.875a5.625 5.625 0 1 0 0 11.25H13.5"/>
               </svg>
             </button>
             <button class="iconBtn tip" id="trashBtn" disabled aria-label="Alles löschen">
-              <svg viewBox="0 0 24 24">
-                <path d="M3 6h18"></path>
-                <path d="M8 6V4h8v2"></path>
-                <path d="M6 6l1 16h10l1-16"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.021.166m-1.021-.165L18.16 19.673A2.25 2.25 0 0 1 15.916 21.75H8.084A2.25 2.25 0 0 1 5.84 19.673L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0V4.875A2.25 2.25 0 0 0 13.5 2.625h-3A2.25 2.25 0 0 0 8.25 4.875V5.25m7.5 0h-7.5"/>
+              </svg>
+            </button>
+            <button class="iconBtn" id="shareBtn" aria-label="Teilen">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
               </svg>
             </button>
           </div>
@@ -928,7 +1106,7 @@
           <div class="lg"><span class="sw w"></span><span>Wochenende</span></div>
           <div class="lg"><span class="sw h"></span><span>Feiertag</span></div>
           <div class="lg"><span class="sw b"></span><span>Brückentag</span></div>
-          <div class="lg"><span class="sw v"></span><span>Gesetzt</span></div>
+          <div class="lg"><span class="sw v"></span><span>Urlaub</span></div>
           <div class="lg"><span class="sw p"></span><span>Vorschau</span></div>
           <div class="lg"><span class="sw f"></span><span>Schulferien</span></div>
         </div>
@@ -938,11 +1116,14 @@
   </div>
 
   <div class="toasts" id="toasts"></div>
+  <div class="tooltipLayer" id="tooltipLayer"></div>
 
   <script>
     const STATES = ["BW","BY","BE","BB","HB","HH","HE","MV","NI","NW","RP","SL","SN","ST","SH","TH"];
     const MONTHS_DE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
     const DOW_DE = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+    const ALL_STATES = ["BW","BY","BE","BB","HB","HH","HE","MV","NI","NW","RP","SL","SN","ST","SH","TH"];
+    const CURRENT_YEAR = new Date().getFullYear();
 
     const pad2 = (n) => String(n).padStart(2,"0");
     const toISO = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
@@ -982,16 +1163,17 @@
     const undoBtn = document.getElementById("undoBtn");
     const redoBtn = document.getElementById("redoBtn");
     const trashBtn = document.getElementById("trashBtn");
-
-    const shareLinkEl = document.getElementById("shareLink");
+    const shareBtn = document.getElementById("shareBtn");
 
     const rangesTitleEl = document.getElementById("rangeTitle");
     const rangesEmptyEl = document.getElementById("rangesEmpty");
     const rangesTableEl = document.getElementById("rangesTable");
     const rangesBodyEl = document.getElementById("rangesBody");
     const copyRangesBtn = document.getElementById("copyRangesBtn");
+    const suggestionsListEl = document.getElementById("suggestionsList");
 
     const toastsEl = document.getElementById("toasts");
+    const tooltipLayerEl = document.getElementById("tooltipLayer");
 
     const STORAGE_KEY = "urlaub_multiyear_clickrange_v1";
 
@@ -1004,8 +1186,6 @@
       return `<svg viewBox="0 0 24 24"><path d="M12 6v12"></path><path d="M6 12h12"></path></svg>`;
     };
 
-    let toastTimer = null;
-
     const showToast = (message, kind = "info") => {
       const el = document.createElement("div");
       el.className = "toast";
@@ -1017,13 +1197,57 @@
         toastsEl.removeChild(toastsEl.firstChild);
       }
 
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => {
+      window.setTimeout(() => {
         el.classList.add("out");
         window.setTimeout(() => {
           if (el.parentNode) el.parentNode.removeChild(el);
         }, 180);
-      }, 1600);
+      }, 2200);
+    };
+
+    let activeTooltipTarget = null;
+    let tooltipBubbleEl = null;
+
+    const hideTooltip = () => {
+      activeTooltipTarget = null;
+      if (!tooltipBubbleEl) return;
+      tooltipBubbleEl.classList.remove("visible");
+      window.setTimeout(() => {
+        if (tooltipBubbleEl && !activeTooltipTarget){
+          tooltipBubbleEl.remove();
+          tooltipBubbleEl = null;
+        }
+      }, 120);
+    };
+
+    const positionTooltip = (target) => {
+      if (!tooltipBubbleEl || !target) return;
+      const rect = target.getBoundingClientRect();
+      const bubbleRect = tooltipBubbleEl.getBoundingClientRect();
+      const left = Math.min(
+        window.innerWidth - bubbleRect.width - 12,
+        Math.max(12, rect.left + rect.width / 2 - bubbleRect.width / 2)
+      );
+      let top = rect.top - bubbleRect.height - 14;
+      if (top < 12) top = rect.bottom + 14;
+      tooltipBubbleEl.style.left = `${left}px`;
+      tooltipBubbleEl.style.top = `${top}px`;
+    };
+
+    const showTooltip = (target) => {
+      const text = target && target.dataset ? target.dataset.tip : "";
+      if (!text) return;
+      activeTooltipTarget = target;
+      if (!tooltipBubbleEl){
+        tooltipBubbleEl = document.createElement("div");
+        tooltipBubbleEl.className = "tooltipBubble";
+        tooltipLayerEl.appendChild(tooltipBubbleEl);
+      }
+      tooltipBubbleEl.textContent = text;
+      positionTooltip(target);
+      window.requestAnimationFrame(() => {
+        if (tooltipBubbleEl) tooltipBubbleEl.classList.add("visible");
+      });
     };
 
     const stateName = (code) => {
@@ -1080,14 +1304,85 @@
 
     const holidayMapForState = (year, stateCode) => {
       const map = new Map();
-      const yearData = dataCache.data[String(year)];
-      if (!yearData || !Array.isArray(yearData.holidays)) return map;
-      for (const h of yearData.holidays){
+      for (const h of getHolidayEntries(year)){
         if (h && typeof h.date === "string" && Array.isArray(h.states) && h.states.includes(stateCode)){
           map.set(h.date, h.name || "Feiertag");
         }
       }
       return map;
+    };
+
+    const easterSunday = (year) => {
+      const a = year % 19;
+      const b = Math.floor(year / 100);
+      const c = year % 100;
+      const d = Math.floor(b / 4);
+      const e = b % 4;
+      const f = Math.floor((b + 8) / 25);
+      const g = Math.floor((b - f + 1) / 3);
+      const h = (19 * a + b - d - g + 15) % 30;
+      const i = Math.floor(c / 4);
+      const k = c % 4;
+      const l = (32 + 2 * e + 2 * i - h - k) % 7;
+      const m = Math.floor((a + 11 * h + 22 * l) / 451);
+      const month = Math.floor((h + l - 7 * m + 114) / 31);
+      const day = ((h + l - 7 * m + 114) % 31) + 1;
+      return new Date(year, month - 1, day);
+    };
+
+    const offsetHoliday = (name, year, offset, states) => ({
+      name,
+      date: toISO(addDays(easterSunday(year), offset)),
+      states
+    });
+
+    const fixedHoliday = (name, year, month, day, states) => ({
+      name,
+      date: `${year}-${pad2(month)}-${pad2(day)}`,
+      states
+    });
+
+    const bussUndBettag = (year) => {
+      const d = new Date(year, 10, 23);
+      while (d.getDay() !== 3) d.setDate(d.getDate() - 1);
+      return toISO(d);
+    };
+
+    const generatedHolidayEntries = (year) => ([
+      fixedHoliday("Neujahr", year, 1, 1, ALL_STATES),
+      fixedHoliday("Heilige Drei Könige", year, 1, 6, ["BW","BY","ST"]),
+      fixedHoliday("Internationaler Frauentag", year, 3, 8, ["BE","MV"]),
+      offsetHoliday("Karfreitag", year, -2, ALL_STATES),
+      offsetHoliday("Ostersonntag", year, 0, ["BB"]),
+      offsetHoliday("Ostermontag", year, 1, ALL_STATES),
+      fixedHoliday("Tag der Arbeit", year, 5, 1, ALL_STATES),
+      offsetHoliday("Christi Himmelfahrt", year, 39, ALL_STATES),
+      offsetHoliday("Pfingstsonntag", year, 49, ["BB"]),
+      offsetHoliday("Pfingstmontag", year, 50, ALL_STATES),
+      offsetHoliday("Fronleichnam", year, 60, ["BW","BY","HE","NW","RP","SL"]),
+      fixedHoliday("Mariä Himmelfahrt", year, 8, 15, ["BY","SL"]),
+      fixedHoliday("Weltkindertag", year, 9, 20, ["TH"]),
+      fixedHoliday("Tag der Deutschen Einheit", year, 10, 3, ALL_STATES),
+      fixedHoliday("Reformationstag", year, 10, 31, ["BB","HB","HH","MV","NI","SN","ST","SH","TH"]),
+      fixedHoliday("Allerheiligen", year, 11, 1, ["BW","BY","NW","RP","SL"]),
+      { name:"Buß- und Bettag", date:bussUndBettag(year), states:["SN"] },
+      fixedHoliday("1. Weihnachtstag", year, 12, 25, ALL_STATES),
+      fixedHoliday("2. Weihnachtstag", year, 12, 26, ALL_STATES)
+    ]);
+
+    const getHolidayEntries = (year) => {
+      const merged = new Map();
+      for (const entry of generatedHolidayEntries(year)){
+        merged.set(`${entry.date}|${entry.name}`, entry);
+      }
+      const yearData = dataCache.data[String(year)];
+      if (yearData && Array.isArray(yearData.holidays)){
+        for (const entry of yearData.holidays){
+          if (!entry || typeof entry.date !== "string" || !Array.isArray(entry.states)) continue;
+          merged.set(`${entry.date}|${entry.name || "Feiertag"}`, entry);
+        }
+      }
+      return Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
     };
 
     const computeBridgeDays = (year, holidayMap) => {
@@ -1164,10 +1459,10 @@
 
     const tryLoadFromUrl = () => {
       const url = new URL(window.location.href);
-      const s = url.searchParams.get("s");
-      if (!s) return false;
+      const id = url.searchParams.get("id");
+      if (!id) return false;
       try{
-        const payload = decodeShare(s);
+        const payload = decodeShare(id);
         applySharePayload(payload);
         return true;
       } catch {
@@ -1404,6 +1699,63 @@
       return Array.isArray(arr) ? arr : [];
     };
 
+    const isRangeCovered = (range, coveredSet, year) => {
+      const days = rangeDaysClipped(year, range.start, range.end);
+      if (!days.length) return false;
+      return days.every((day) => coveredSet.has(day));
+    };
+
+    const hasSchoolDataForState = (year, stateCode) => getSchoolRanges(year, stateCode).length > 0;
+
+    const bestWindows = (year, holidayMap) => {
+      const limit = Math.max(3, Math.min(8, getCurrentYearAvailable() || 0));
+      const endOfYear = new Date(year, 11, 31);
+      const picks = [];
+      for (let start = new Date(year, 0, 1); start <= endOfYear; start = addDays(start, 1)){
+        let used = 0;
+        for (let end = start; end <= endOfYear; end = addDays(end, 1)){
+          const iso = toISO(end);
+          if (workingDay(iso, holidayMap)) used++;
+          if (used > limit) break;
+          const total = Math.round((end - start) / 86400000) + 1;
+          if (total < 4 || used === 0) continue;
+          picks.push({
+            start: toISO(start),
+            end: iso,
+            used,
+            total,
+            score: total * 8 - used * 5
+          });
+        }
+      }
+
+      picks.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.total !== a.total) return b.total - a.total;
+        if (a.used !== b.used) return a.used - b.used;
+        return a.start.localeCompare(b.start);
+      });
+
+      const out = [];
+      for (const pick of picks){
+        if (out.some((entry) => !(pick.end < entry.start || pick.start > entry.end))) continue;
+        out.push(pick);
+        if (out.length === 4) break;
+      }
+      return out;
+    };
+
+    const syncSchoolToggle = () => {
+      const schoolAvailable = hasSchoolDataForState(state.selectedYear, state.selectedState);
+      toggleSchool.disabled = !schoolAvailable;
+      if (!schoolAvailable){
+        toggleSchool.checked = false;
+        state.ui.school = false;
+        return;
+      }
+      if (state.ui.school) toggleSchool.checked = true;
+    };
+
     const updateDecorations = () => {
       const year = state.selectedYear;
 
@@ -1521,6 +1873,86 @@
       }
     };
 
+    const updateSuggestions = () => {
+      const year = state.selectedYear;
+      const holidayMap = holidayMapForState(year, state.selectedState);
+      const coveredSet = rangesToSetClipped(year, mergeOverlaps(getCurrentYearVacation()));
+      const picks = bestWindows(year, holidayMap)
+        .filter((pick) => !isRangeCovered(pick, coveredSet, year));
+
+      if (!picks.length){
+        suggestionsListEl.innerHTML = `<div class="empty">Keine offenen Vorschläge.</div>`;
+        return;
+      }
+
+      suggestionsListEl.innerHTML = picks.map((pick) => {
+        return `
+          <button class="suggestionItem" type="button" data-start="${pick.start}" data-end="${pick.end}">
+            <div class="suggestionMain">
+              <div class="title">${toDE(pick.start)} - ${toDE(pick.end)}</div>
+              <div class="meta">${pick.used} Urlaubstage</div>
+              <div class="suggestionCta">Einsetzen</div>
+            </div>
+            <div class="suggestionStat">
+              <div class="free">${pick.total}</div>
+              <div class="used">freie Tage</div>
+            </div>
+          </button>
+        `;
+      }).join("");
+    };
+
+    suggestionsListEl.addEventListener("click", (ev) => {
+      const btn = ev.target.closest(".suggestionItem");
+      if (!btn) return;
+      const start = btn.dataset.start;
+      const end = btn.dataset.end;
+      if (!start || !end) return;
+
+      pushHistory();
+      const next = getCurrentYearVacation().slice();
+      next.push(normalizeRange(start, end));
+      setCurrentYearVacation(next);
+      rangeStartISO = null;
+      hoverISO = null;
+      save();
+      updateAll();
+      showToast(`Vorschlag gesetzt`, "toggle");
+    });
+
+    document.addEventListener("mouseover", (ev) => {
+      const target = ev.target.closest("[data-tip]");
+      if (!target) return;
+      showTooltip(target);
+    });
+
+    document.addEventListener("mouseout", (ev) => {
+      const target = ev.target.closest("[data-tip]");
+      if (!target) return;
+      if (target.contains(ev.relatedTarget)) return;
+      hideTooltip();
+    });
+
+    document.addEventListener("focusin", (ev) => {
+      const target = ev.target.closest("[data-tip]");
+      if (!target) return;
+      showTooltip(target);
+    });
+
+    document.addEventListener("focusout", (ev) => {
+      const target = ev.target.closest("[data-tip]");
+      if (!target) return;
+      hideTooltip();
+    });
+
+    window.addEventListener("scroll", () => {
+      if (activeTooltipTarget) positionTooltip(activeTooltipTarget);
+    }, { passive:true });
+
+    window.addEventListener("resize", () => {
+      if (activeTooltipTarget) positionTooltip(activeTooltipTarget);
+    });
+
     const rangesTextForClipboard = () => {
       const year = state.selectedYear;
       const merged = mergeOverlaps(getCurrentYearVacation());
@@ -1536,8 +1968,9 @@
 
     const updateShareLink = () => {
       const url = new URL(window.location.href);
-      url.searchParams.set("s", encodeShare(toSharePayload()));
-      shareLinkEl.value = url.toString();
+      url.searchParams.delete("serverwindowid");
+      url.searchParams.set("id", encodeShare(toSharePayload()));
+      return url.toString();
     };
 
     const updateYearTitle = () => {
@@ -1546,13 +1979,16 @@
 
     const updateAll = () => {
       state.selectedState = stateSelect.value;
-      state.selectedYear = Number(yearSelect.value);
+      if (!yearSelect.disabled && yearSelect.value){
+        state.selectedYear = Number(yearSelect.value);
+      }
 
       ensureYearBucket(state.selectedYear);
 
       state.ui.holidays = !!toggleHolidays.checked;
       state.ui.bridge = !!toggleBridge.checked;
       state.ui.school = !!toggleSchool.checked;
+      syncSchoolToggle();
 
       save();
       updateYearTitle();
@@ -1560,6 +1996,7 @@
       updateDashboard();
       updateTopButtons();
       updateRangesList();
+      updateSuggestions();
       updateShareLink();
     };
 
@@ -1581,15 +2018,14 @@
       if (ok) showToast("Liste kopiert", "copy");
     });
 
-    shareLinkEl.addEventListener("click", async () => {
-      shareLinkEl.focus();
-      shareLinkEl.select();
+    shareBtn.addEventListener("click", async () => {
+      const url = updateShareLink();
       let ok = false;
       try{
-        await navigator.clipboard.writeText(shareLinkEl.value);
+        await navigator.clipboard.writeText(url);
         ok = true;
       } catch {}
-      if (ok) showToast("Sharing-Link kopiert", "copy");
+      if (ok) showToast("Link kopiert", "copy");
     });
 
     rangesBodyEl.addEventListener("click", (ev) => {
@@ -1649,11 +2085,23 @@
     stateSelect.addEventListener("change", () => {
       rangeStartISO = null;
       hoverISO = null;
+      undoStack.length = 0;
+      redoStack.length = 0;
+      const beforeYear = state.selectedYear;
+      state.selectedState = stateSelect.value;
+      populateYearSelect();
+      if (state.selectedYear !== beforeYear){
+        ensureYearBucket(state.selectedYear);
+        availableDaysInput.value = String(getCurrentYearAvailable());
+        buildCalendar();
+        updateTopButtons();
+      }
       updateAll();
       showToast(`Bundesland: ${stateName(state.selectedState)}`, "toggle");
     });
 
     yearSelect.addEventListener("change", () => {
+      if (yearSelect.disabled || !yearSelect.value) return;
       rangeStartISO = null;
       hoverISO = null;
       undoStack.length = 0;
@@ -1692,28 +2140,53 @@
       onToggleToast("Schulferien", toggleSchool.checked);
     });
 
+    const availableYearsForState = (stateCode) => dataCache.years.filter((year) => hasSchoolDataForState(year, stateCode));
+
     const populateYearSelect = () => {
+      const years = availableYearsForState(state.selectedState);
       yearSelect.innerHTML = "";
-      for (const y of dataCache.years){
+      if (!years.length){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Keine Ferien";
+        yearSelect.appendChild(opt);
+        yearSelect.disabled = true;
+        return years;
+      }
+      yearSelect.disabled = false;
+      if (!years.includes(state.selectedYear)){
+        state.selectedYear = years[0];
+      }
+      for (const y of years){
         const opt = document.createElement("option");
         opt.value = String(y);
         opt.textContent = String(y);
         yearSelect.appendChild(opt);
       }
+      yearSelect.value = String(state.selectedYear);
+      return years;
     };
 
     const dataCache = { years: [], states: [], data: {} };
+
+    const buildDynamicYears = (existingYears) => {
+      const years = new Set(existingYears);
+      for (let year = CURRENT_YEAR - 1; year <= CURRENT_YEAR + 9; year++){
+        years.add(year);
+      }
+      if (Number.isFinite(state.selectedYear)) years.add(state.selectedYear);
+      return Array.from(years).sort((a, b) => a - b);
+    };
 
     const loadDataJson = async () => {
       const res = await fetch("./data.json", { cache: "no-cache" });
       if (!res.ok) throw new Error("data.json konnte nicht geladen werden");
       const json = await res.json();
-      dataCache.years = Array.isArray(json.years) ? json.years.filter(n => Number.isFinite(n)) : [];
+      const sourceYears = Array.isArray(json.years) ? json.years.filter(n => Number.isFinite(n)) : [];
       dataCache.states = Array.isArray(json.states) ? json.states : [];
       dataCache.data = (json.data && typeof json.data === "object") ? json.data : {};
-      if (!dataCache.years.length){
-        dataCache.years = [2026, 2027, 2028, 2029, 2030];
-      }
+      dataCache.years = buildDynamicYears(sourceYears);
+      if (!dataCache.states.length) dataCache.states = STATES.slice();
     };
 
     const init = async () => {
@@ -1721,14 +2194,13 @@
 
       load();
 
-      if (!dataCache.years.includes(state.selectedYear)){
-        state.selectedYear = dataCache.years[0];
-      }
-
       populateYearSelect();
 
       const fromUrl = tryLoadFromUrl();
-      if (fromUrl) save();
+      if (fromUrl){
+        populateYearSelect();
+        save();
+      }
 
       ensureYearBucket(state.selectedYear);
 

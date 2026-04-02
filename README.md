@@ -1,20 +1,70 @@
 # Urlaubsplaner
-Ein kleines, statisches Browser-Tool zur Urlaubsplanung für **Deutschland**.  
-Es zeigt das komplette Kalenderjahr, markiert optional **Feiertage**, **Brückentage** und **Schulferien** (je Bundesland) und lässt dich per **2-Klick-Auswahl** Zeiträume setzen.
 
-## Features
+Ein statisches Browser-Tool für die Urlaubsplanung in Deutschland.  
+Du wählst Bundesland, Jahr und verfügbare Urlaubstage, setzt Zeiträume direkt im Kalender und siehst sofort, wie viele Urlaubstage du wirklich brauchst.
 
-- Kalenderansicht
-- Auswahl von **Bundesland** und **verfügbaren Urlaubstagen**
-- Auswahl per **Klick 1 = Start / Klick 2 = Ende**
-- Anzeige der gesetzten Zeiträume als Liste (Start/Ende/Tage) + **Copy**
-- Dashboard:
-  - **Gesetzte Urlaubstage** (nur Werktage, ohne Wochenende/Feiertage)
-  - **Resturlaub** (verfügbar – gesetzt)
-  - **Freie Tage** (alle Tage im gesetzten Bereich inkl. Wochenende/Feiertage)
-- Optional einblendbar:
-  - **Feiertage**
-  - **Brückentage** (aus Feiertagen abgeleitet)
-  - **Schulferien**
-- **Undo / Redo / Löschen** für gesetzte Zeiträume
-- **Sharing-Link** wird live aktualisiert
+## Was das Tool macht
+
+- zeigt ein komplettes Kalenderjahr
+- markiert Feiertage, Brückentage und Schulferien
+- berechnet gesetzte Urlaubstage nur auf Werktagen
+- zeigt Resturlaub und freie Gesamttage
+- schlägt gute Zeiträume mit wenig eingesetzten Urlaubstagen vor
+- speichert die aktuelle Planung direkt im Browser
+- erzeugt einen teilbaren Link zur aktuellen Ansicht
+
+## So benutzt du das Tool
+
+1. Bundesland wählen
+2. Jahr wählen
+3. Verfügbare Urlaubstage eintragen
+4. Im Kalender einmal auf den Starttag und einmal auf den Endtag klicken
+5. Den gesetzten Zeitraum in der Liste prüfen
+
+Ein weiterer Klick auf einen Vorschlag übernimmt den Zeitraum direkt.
+
+## Kalenderlogik
+
+- Feiertage werden automatisch für das jeweilige Jahr berechnet
+- Brückentage werden aus den Feiertagen abgeleitet
+- Schulferien kommen aus den hinterlegten Datensätzen je Bundesland
+- Jahre ohne Schulferien-Daten sind in der Jahresauswahl nicht verfügbar
+
+## Farben im Kalender
+
+- Wochenende
+- Feiertag
+- Brückentag
+- Urlaub
+- Vorschau
+- Schulferien
+
+Die Legende oberhalb des Kalenders zeigt die aktuelle Zuordnung.
+
+## Zeiträume setzen und ändern
+
+- 1. Klick setzt den Start
+- 2. Klick setzt das Ende
+- `ESC` bricht eine laufende Auswahl ab
+- einzelne Zeiträume lassen sich in der Tabelle löschen
+- oben rechts stehen `Undo`, `Redo`, `Alles löschen` und `Link kopieren`
+
+## Vorschläge
+
+Die Vorschläge basieren auf Feiertagen und Brückentagen.  
+Bereits vollständig übernommene Vorschläge verschwinden automatisch aus der Liste.
+
+## Speicherung
+
+Die Planung wird lokal im Browser gespeichert.  
+Wenn du dieselbe Browser-Umgebung erneut öffnest, bleibt dein Stand erhalten.
+
+## Teilen
+
+Über das Share-Icon oben rechts wird ein Link mit der aktuellen Planung erzeugt und in die Zwischenablage kopiert.
+
+## Hinweise
+
+- Das Tool läuft direkt im Browser
+- es ist keine Anmeldung nötig
+- die Daten gelten für Deutschland und deutsche Bundesländer
